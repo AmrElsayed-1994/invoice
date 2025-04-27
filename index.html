@@ -93,7 +93,7 @@
 
     .date-info {
       position: absolute;
-      top: 70px;
+      top: 72px;
       bottom: 10px;
       left: 40px;
       color: #fff;
@@ -139,7 +139,7 @@
     }
 
     .footer {
-      background: url('https://cdn.shopify.com/s/files/1/0636/1035/5827/files/3.jpg') no-repeat center bottom;
+      background: url('') no-repeat center bottom;
       background-size: cover;
       height: 120px;
     }
@@ -167,7 +167,6 @@
     .section h3 {
       margin-top: 0px;
       margin-bottom: 5px;
-      border-bottom: 1px solid #eee;
     }
 
     td input {
@@ -183,7 +182,6 @@
     }
 
     .tablec {
-      border: 1px solid #ccc;
       padding: 1px;
       text-align: center;
       background-color: #234082;
@@ -223,8 +221,14 @@
     }
 
     th, td {
-      border: 1px solid #ccc;
+      border: 1px solid #000000;
       padding: 1px;
+      font-weight: bold;
+      text-align: center;
+    }
+    th, tk {
+      border: 1px solid #000000;
+      padding: 10px;
       font-weight: bold;
       text-align: center;
     }
@@ -246,11 +250,13 @@
     .summary {
       font-weight: bold;
       padding: 5px;
-      flex: 1 1 33%;
+      flex: 1 1 50%;
     }
 
     .totals td {
       font-weight: bold;
+      padding: 10px;
+      text-align: center;
     }
 
     .signature {
@@ -355,32 +361,35 @@
         </div>
           
           <div class="date-info">
-            <label style="color:white; width:200px; font-size:12px;font-weight: bold;">Date: <input style="color:white; width:200px; font-size:15px;font-weight: bold; background:transparent; padding:12px; border-color:transparent;" type="txt" id="invoiceDate"></label>
+            <label style="color:white; width:200px; font-size:12px;font-weight: bold;">Date: <input style="color:white; width:200px; font-size:12px;font-weight: bold; background:transparent; padding:12px; border-color:transparent;" type="txt" id="invoiceDate"></label>
           </div>
           <div class="header-info">
-            <label>Reference: <input style="width:200px; font-size:15px; font-weight: bold; background:transparent; padding-top:12px; border-color:transparent;" type="text" id="reference"></label>
-            <p>Invoice Number: <input style="width:100px; font-size:15px; font-weight: bold; background:transparent; border-color:transparent;" type="text" id="invoiceNumber"></p>
+            <label>Reference: <input style="width:400px; font-size:12px; font-weight: bold; background:transparent; padding-top:12px; border-color:transparent;" type="text" id="reference"></label>
+            <p>Invoice Number: <input style="width:300px; font-size:12px; font-weight: bold; background:transparent; border-color:transparent;" type="text" id="invoiceNumber"></p>
           </div>
         </div>
 
      
  
 
-        <div class="section details-section">
+       <div class="section details-section">
           <div class="client-details">
             <h3 class="tableb">Client Details</h3>
             <p style="margin-bottom: 0px;">
               <strong style="font-size:14px;">Name/Reference:</strong>
               <input style="width:300px; font-size:14px; font-weight: bold; background:transparent; border-color:transparent;" type="text" id="clientName">
-               <input style="width:400px; margin-left: 5px; font-size:14px; font-weight: bold; background:transparent; border-color:transparent;" type="text" id="clientName">
+               <input style="width:400px; margin-left: 5px; font-size:14px; font-weight: bold; background:transparent; border-color:transparent;" type="text" id="clientName1">
             </p>
             <p style="margin-top: 0px; margin-bottom: 0px;">
               <strong style="font-size:14px;">Att./Email:</strong>
               <input style="width:350px; font-size:14px; font-weight: bold; background:transparent; border-color:transparent;" type="text" id="attEmail">
+<input style="width:430px; font-size:14px; font-weight: bold; background:transparent; border-color:transparent;" type="text" id="attEmail1">
+<input style="width:430px; font-size:14px; font-weight: bold; background:transparent; border-color:transparent;" type="text" id="attEmail2">
+<input style="width:430px; font-size:14px; font-weight: bold; background:transparent; border-color:transparent;" type="text" id="attEmail3">
             </p>
-            <p style="margin-top: 0px;">
+            <p style="margin-top: 15px;">
               <strong style="font-size:14px;">LPO Number:</strong>
-              <input style="width:300px; font-size:14px; font-weight: bold; background:transparent; border-color:transparent;" type="text" id="lpoNumber">
+              <input style="width:330px; font-size:14px; font-weight: bold; background:transparent; border-color:transparent;" type="text" id="lpoNumber">
             </p>
           </div>
 
@@ -388,11 +397,15 @@
             <h3 class="tableb">Project Details</h3>
             <p style="margin-bottom: 0px;">
               <strong style="font-size:14px;">Project Name/Ref:</strong>
-              <input style="width:300px; font-size:14px; font-weight: bold; background:transparent; border-color:transparent;" type="text" id="projectName">
+              
+<input style="width:290px; font-size:14px; font-weight: bold; background:transparent; border-color:transparent;" type="text" id="projectName">
+<input style="width:420px; font-size:14px; font-weight: bold; background:transparent; border-color:transparent;" type="text" id="projectName1">
+<input style="width:420px; font-size:14px; font-weight: bold; background:transparent; border-color:transparent;" type="text" id="projectName2">
             </p>
-            <p style="margin-top: 0px;">
+            <p style="margin-top: 25px;">
               <strong style="font-size:14px;">Location:</strong>
               <input style="width:350px; font-size:14px; font-weight: bold; background:transparent; border-color:transparent;" type="text" id="location">
+<input style="width:400px; font-size:14px; font-weight: bold; background:transparent; border-color:transparent;" type="text" id="location1">
             </p>
           </div>
         </div>
@@ -425,7 +438,7 @@
                   <td>Discount Item</td>
                   <td>
                     <input style="width:auto; font-size:18px; font-weight: bold; background:transparent; padding-top:12px; border-color:transparent;" type="text" id="discountDescription" placeholder="Discount Name">
-                    <input style="width:auto; font-size:18px; font-weight: bold; background:transparent; padding-top:12px; border-color:transparent;" type="number" id="discountValue" placeholder="Value" value="0">
+                    <input style="width:auto; font-size:18px; font-weight: bold; background:transparent; padding-top:12px; border-color:transparent;" type="text" id="discountValue" placeholder="Value" value="0">
                     <button id="addDiscountBtn">➖ Add</button>
                   </td>
                 </tr>
@@ -435,7 +448,7 @@
                   <td>Additional Item</td>
                   <td>
                     <input style="width:auto; font-size:18px; font-weight: bold; background:transparent; padding-top:12px; border-color:transparent;" type="text" id="extraDescription" placeholder="Item Name">
-                    <input style="width:auto; font-size:18px; font-weight: bold; background:transparent; padding-top:12px; border-color:transparent;" type="number" id="extraValue" placeholder="Value" value="0">
+                    <input style="width:auto; font-size:18px; font-weight: bold; background:transparent; padding-top:12px; border-color:transparent;" type="text" id="extraValue" placeholder="Value" value="0">
                     <button id="addExtraBtn">➕ Add</button>
                   </td>
                 </tr>
@@ -519,15 +532,15 @@ function updateDateTime() {
 }
 setInterval(updateDateTime, 1000);
 
-function createItemRow(description = "", unit = "", quantity = 1, price = 0) {
+function createItemRow(description = "", unit = "", quantity = 1, price = 0, total = 0.00) {
   const row = document.createElement("tr");
   row.classList.add("invoice-item");
   row.innerHTML = `
     <td><textarea class="desc" style="font-size: 14px;width: 100%; background:transparent; border-color:transparent; resize: both;">${description}</textarea></td>
     <td><input style="text-align: center;" value="${unit}" class="unit"></td>
-    <td><input style="text-align: center;" type="number" value="${quantity}" class="qty"></td>
-    <td><input style="text-align: center;" type="number" value="${price}" class="price"></td>
-    <td class="total">0</td>
+    <td><input style="text-align: center;" type="text" value="${quantity}" class="qty"></td>
+    <td><input style="text-align: center;" type="text" value="${price}" class="price"></td>
+    <td class="total">${total}</td>
     <td class="no-export"><button class="delete-btn">❌</button></td>
   `;
 
@@ -550,11 +563,11 @@ function calculateTotals() {
     const qty = parseFloat(row.querySelector(".qty").value) || 0;
     const price = parseFloat(row.querySelector(".price").value) || 0;
     const total = qty * price;
-    row.querySelector(".total").textContent = ` ${total.toFixed(2)}`;
+    row.querySelector(".total").textContent = ` ${total.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
     subtotal += total;
   });
 
-  subtotalEl.textContent = `AED ${subtotal.toFixed(2)}`;
+  subtotalEl.textContent = `AED ${subtotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
 
   let extra = 0;
   extraItemsBody.querySelectorAll("tr").forEach(row => {
@@ -571,10 +584,10 @@ function calculateTotals() {
   const grandTotal = subtotal + extra - discount;
   const tax = grandTotal * 0.05;
 
-  taxEl.textContent = `AED ${tax.toFixed(2)}`;
-  grandTotalEl.textContent = `AED ${grandTotal.toFixed(2)}`;
-  amountDueTodayEl.textContent = `AED ${(grandTotal + tax).toFixed(2)}`;
-} 
+  taxEl.textContent = `AED ${tax.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+  grandTotalEl.textContent = `AED ${grandTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+  amountDueTodayEl.textContent = `AED ${(grandTotal + tax).toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+}
 
 function getInvoiceData() {
   return {
@@ -583,10 +596,17 @@ function getInvoiceData() {
     reference: document.getElementById('reference').value,
     invoiceNumber: document.getElementById('invoiceNumber').value,
     clientName: document.getElementById('clientName').value,
+    clientName1: document.getElementById('clientName1').value, 
     attEmail: document.getElementById('attEmail').value,
+    attEmail1: document.getElementById('attEmail1').value,
+    attEmail2: document.getElementById('attEmail2').value,
+    attEmail3: document.getElementById('attEmail3').value,
     lpoNumber: document.getElementById('lpoNumber').value,
     projectName: document.getElementById('projectName').value,
+    projectName1: document.getElementById('projectName1').value,
+    projectName2: document.getElementById('projectName2').value,
     location: document.getElementById('location').value,
+    location1: document.getElementById('location1').value,
     items: Array.from(itemsBody.querySelectorAll('tr')).map(row => ({
       description: row.querySelector('.desc').value,
       unit: row.querySelector('.unit').value,
@@ -613,10 +633,17 @@ function loadInvoiceData(data) {
   document.getElementById('reference').value = data.reference || '';
   document.getElementById('invoiceNumber').value = data.invoiceNumber || '';
   document.getElementById('clientName').value = data.clientName || '';
+  document.getElementById('clientName1').value = data.clientName1 || '';
   document.getElementById('attEmail').value = data.attEmail || '';
+  document.getElementById('attEmail1').value = data.attEmail1 || '';
+  document.getElementById('attEmail2').value = data.attEmail2 || '';
+  document.getElementById('attEmail3').value = data.attEmail3 || '';
   document.getElementById('lpoNumber').value = data.lpoNumber || '';
   document.getElementById('projectName').value = data.projectName || '';
+  document.getElementById('projectName1').value = data.projectName1 || '';
+  document.getElementById('projectName2').value = data.projectName2 || '';
   document.getElementById('location').value = data.location || '';
+  document.getElementById('location1').value = data.location1 || '';
 
   if (data.items && data.items.length > 0) {
     data.items.forEach(item => {
@@ -651,7 +678,7 @@ function loadInvoiceData(data) {
       row.setAttribute("data-value", item.value);
       row.innerHTML = `
         <td>${item.name}</td>
-        <td>
+        <td style="color: #ff0000">
           - AED ${item.value.toFixed(2)}
           <button class="delete-btn no-export">❌</button>
         </td>
@@ -721,10 +748,17 @@ function clearInvoice() {
   document.getElementById('reference').value = '';
   document.getElementById('invoiceNumber').value = '';
   document.getElementById('clientName').value = '';
+  document.getElementById('clientName1').value = '';
   document.getElementById('attEmail').value = '';
+  document.getElementById('attEmail1').value = '';
+  document.getElementById('attEmail2').value = '';
+  document.getElementById('attEmail3').value = '';
   document.getElementById('lpoNumber').value = '';
   document.getElementById('projectName').value = '';
+  document.getElementById('projectName1').value = '';
+  document.getElementById('projectName2').value = '';
   document.getElementById('location').value = '';
+  document.getElementById('location1').value = '';
   itemsBody.innerHTML = '';
   extraItemsBody.innerHTML = '';
   discountItemsBody.innerHTML = '';
