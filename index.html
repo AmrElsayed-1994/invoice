@@ -667,71 +667,85 @@ function getInvoiceData() {
 }
 
 function loadInvoiceData(data) {
-  clearInvoice();
-  
+  // Clear the form but do NOT add a new item row automatically
+  document.getElementById('invoiceDate').value = '';
+  document.getElementById('reference').value = '';
+  document.getElementById('invoiceNumber').value = '';
+  document.getElementById('clientName').value = '';
+  document.getElementById('clientName1').value = '';
+  document.getElementById('attEmail').value = '';
+  document.getElementById('attEmail1').value = '';
+  document.getElementById('attEmail2').value = '';
+  document.getElementById('attEmail3').value = '';
+  document.getElementById('lpoNumber').value = '';
+  document.getElementById('projectName').value = '';
+  document.getElementById('projectName1').value = '';
+  document.getElementById('projectName2').value = '';
+  document.getElementById('location').value = '';
+  document.getElementById('location1').value = '';
+  itemsBody.innerHTML = '';
+  extraItemsBody.innerHTML = '';
+ discountItemsBody.innerHTML = '';
+
   document.getElementById('invoiceDate').value = data.date || '';
   document.getElementById('reference').value = data.reference || '';
   document.getElementById('invoiceNumber').value = data.invoiceNumber || '';
   document.getElementById('clientName').value = data.clientName || '';
-  document.getElementById('clientName1').value = data.clientName1 || '';
-  document.getElementById('attEmail').value = data.attEmail || '';
-  document.getElementById('attEmail1').value = data.attEmail1 || '';
-  document.getElementById('attEmail2').value = data.attEmail2 || '';
-  document.getElementById('attEmail3').value = data.attEmail3 || '';
-  document.getElementById('lpoNumber').value = data.lpoNumber || '';
+ document.getElementById('clientName1').value = data.clientName1 || '';
+ document.getElementById('attEmail').value = data.attEmail || '';  document.getElementById('attEmail1').value = data.attEmail1 || '';
+ document.getElementById('attEmail2').value = data.attEmail2 || '';  document.getElementById('attEmail3').value = data.attEmail3 || '';
+ document.getElementById('lpoNumber').value = data.lpoNumber || '';
   document.getElementById('projectName').value = data.projectName || '';
   document.getElementById('projectName1').value = data.projectName1 || '';
   document.getElementById('projectName2').value = data.projectName2 || '';
-  document.getElementById('location').value = data.location || '';
-  document.getElementById('location1').value = data.location1 || '';
+ document.getElementById('location').value = data.location || '';
+ document.getElementById('location1').value = data.location1 || '';
 
   if (data.items && data.items.length > 0) {
     data.items.forEach(item => {
-      createItemRow(item.description, item.unit, item.quantity, item.price);
-    });
-  } else {
-    createItemRow();
-  }
+     createItemRow(item.description, item.unit, item.quantity, item.price);
+   });
+ }
+  // Do NOT create a new empty row if there are no items
 
-  if (data.extraItems) {
+ if (data.extraItems) {
     data.extraItems.forEach(item => {
       const row = document.createElement("tr");
-      row.setAttribute("data-value", item.value);
+     row.setAttribute("data-value", item.value);
       row.innerHTML = `
-        <td>${item.name}</td>
-        <td>
-          AED ${formatNumberWithCommas(item.value)}
+        <td>${item.name}</td>       <td>
+         AED ${item.value.toFixed(2)}
           <button class="delete-btn no-export">❌</button>
-        </td>
-      `;
-      row.querySelector(".delete-btn").addEventListener("click", () => {
+       </td>
+     `;
+     row.querySelector(".delete-btn").addEventListener("click", () => {
         row.remove();
         calculateTotals();
-      });
-      extraItemsBody.appendChild(row);
+     });
+     extraItemsBody.appendChild(row);
     });
   }
 
-  if (data.discountItems) {
-    data.discountItems.forEach(item => {
-      const row = document.createElement("tr");
-      row.setAttribute("data-value", item.value);
-      row.innerHTML = `
-        <td>${item.name}</td>
-        <td style="color: #ff0000">
-          - AED ${formatNumberWithCommas(item.value)}
-          <button class="delete-btn no-export">❌</button>
-        </td>
-      `;
-      row.querySelector(".delete-btn").addEventListener("click", () => {
-        row.remove();
-        calculateTotals();
-      });
-      discountItemsBody.appendChild(row);
-    });
-  }
+ if (data.discountItems) {
+   data.discountItems.forEach(item => {
+     const row = document.createElement("tr");
+     row.setAttribute("data-value", item.value);
+     row.innerHTML = `
+       <td>${item.name}</td>
+       <td style="color: #ff0000">
+         - AED ${item.value.toFixed(2)}
+         <button class="delete-btn no-export">❌</button>
+      </td>
+     `;
+    row.querySelector(".delete-btn").addEventListener("click", () => {
+      row.remove();
+     calculateTotals();
+  });
+    discountItemsBody.appendChild(row);
+ });
+ }
 
-  calculateTotals();
+ calculateTotals();
 }
 
 function saveInvoice() {
