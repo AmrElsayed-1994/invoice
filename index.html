@@ -171,7 +171,7 @@
 
     td input {
       width: 100%;
-      font-size: 12px;
+      font-size: 15px;
       background: transparent;
       border: none;
       resize: vertical;
@@ -222,16 +222,11 @@
 
     th, td {
       border: 1px solid #000000;
-      padding: 1px;
+      padding: 1px 8px;
       font-weight: bold;
       text-align: center;
     }
-    th, tk {
-      border: 1px solid #000000;
-      padding: 10px;
-      font-weight: bold;
-      text-align: center;
-    }
+
 
     .b-details {
       padding: 5px;
@@ -497,17 +492,56 @@
 // Initialize jsPDF
 const { jsPDF } = window.jspdf;
 
-  // Set current date and time
+// Set current date and time
 const date = new Date();
 
 let day = date.getDate();
 let month = date.getMonth() + 1;
 let year = date.getFullYear();
 
-// This arrangement can be altered based on how we want the date's format to appear.
 let currentDate = `${day}/${month}/${year}`;
-console.log(currentDate); 
-  
+console.log(currentDate);
+
+// Helper function for formatting numbers with commas, no .00 unless user adds decimals
+function formatNumberWithCommas(val) {
+  if (val === "" || val === null || isNaN(val)) return "";
+  const valStr = String(val);
+  if (valStr.includes(".")) {
+    let [intPart, decPart] = valStr.split(".");
+    intPart = Number(intPart).toLocaleString();
+    // Keep only up to first two decimal digits entered by user
+    decPart = decPart ? decPart.substring(0, 2) : "";
+    // Remove trailing zero if user types e.g. .00 or .10 etc -- but keep user-typed formatting
+    return decPart.length > 0 ? `${intPart}.${decPart}` : intPart;
+  }
+  return Number(val).toLocaleString();
+}
+
+// Format input as user types (no .00 unless user adds it)
+function parseAndFormatInput(e) {
+  let val = e.target.value.replace(/,/g, "");
+  if (val === "") {
+    e.target.value = "";
+    return;
+  }
+  if (val.includes(".")) {
+    let [intPart, decPart] = val.split(".");
+    intPart = intPart === "" ? "0" : intPart;
+    let formatted = Number(intPart).toLocaleString();
+    if (typeof decPart !== "undefined") {
+      decPart = decPart.substring(0, 2); // max 2 decimals
+      e.target.value = decPart.length > 0 ? `${formatted}.${decPart}` : formatted;
+    } else {
+      e.target.value = formatted;
+    }
+  } else {
+    let num = parseFloat(val);
+    if (!isNaN(num)) {
+      e.target.value = formatNumberWithCommas(num);
+    }
+  }
+}
+
 // Initialize variables
 let itemId = 0;
 const itemsBody = document.getElementById("itemsTableBody");
@@ -532,15 +566,15 @@ function updateDateTime() {
 }
 setInterval(updateDateTime, 1000);
 
-function createItemRow(description = "", unit = "", quantity = 1, price = 0, total = 0.00) {
+function createItemRow(description = "", unit = "", quantity = 1, price = 0, total = 0) {
   const row = document.createElement("tr");
   row.classList.add("invoice-item");
   row.innerHTML = `
     <td><textarea class="desc" style="font-size: 14px;width: 100%; background:transparent; border-color:transparent; resize: both;">${description}</textarea></td>
     <td><input style="text-align: center;" value="${unit}" class="unit"></td>
-    <td><input style="text-align: center;" type="text" value="${quantity}" class="qty"></td>
-    <td><input style="text-align: center;" type="text" value="${price}" class="price"></td>
-    <td class="total">${total}</td>
+    <td><input style="text-align: center; width: 30px;" type="text" value="${formatNumberWithCommas(quantity)}" class="qty"></td>
+    <td><input style="text-align: center;" type="text" value="${formatNumberWithCommas(price)}" class="price"></td>
+    <td class="total">${formatNumberWithCommas(total)}</td>
     <td class="no-export"><button class="delete-btn">❌</button></td>
   `;
 
@@ -549,9 +583,17 @@ function createItemRow(description = "", unit = "", quantity = 1, price = 0, tot
     calculateTotals();
   });
 
-  [".desc", ".unit", ".qty", ".price"].forEach(cls => {
-    row.querySelector(cls).addEventListener("input", calculateTotals);
+  // Format quantity and price on input, and recalculate
+  [".qty", ".price"].forEach(cls => {
+    let input = row.querySelector(cls);
+    input.addEventListener("input", (e) => {
+      parseAndFormatInput(e);
+      calculateTotals();
+    });
   });
+
+  row.querySelector(".desc").addEventListener("input", calculateTotals);
+  row.querySelector(".unit").addEventListener("input", calculateTotals);
 
   itemsBody.appendChild(row);
   calculateTotals();
@@ -560,33 +602,37 @@ function createItemRow(description = "", unit = "", quantity = 1, price = 0, tot
 function calculateTotals() {
   let subtotal = 0;
   itemsBody.querySelectorAll("tr").forEach(row => {
-    const qty = parseFloat(row.querySelector(".qty").value) || 0;
-    const price = parseFloat(row.querySelector(".price").value) || 0;
+    const qty = parseFloat(row.querySelector(".qty").value.replace(/,/g, "")) || 0;
+    const price = parseFloat(row.querySelector(".price").value.replace(/,/g, "")) || 0;
     const total = qty * price;
-    row.querySelector(".total").textContent = ` ${total.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+    row.querySelector(".total").textContent = ` ${formatNumberWithCommas(total)}`;
     subtotal += total;
   });
 
-  subtotalEl.textContent = `AED ${subtotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+  subtotalEl.textContent = `AED ${formatNumberWithCommas(subtotal)}`;
 
   let extra = 0;
   extraItemsBody.querySelectorAll("tr").forEach(row => {
-    const val = parseFloat(row.getAttribute("data-value")) || 0;
+    const val = parseFloat(row.getAttribute("data-value").replace(/,/g, "")) || 0;
     extra += val;
   });
 
   let discount = 0;
   discountItemsBody.querySelectorAll("tr").forEach(row => {
-    const val = parseFloat(row.getAttribute("data-value")) || 0;
+    const val = parseFloat(row.getAttribute("data-value").replace(/,/g, "")) || 0;
     discount += val;
   });
 
   const grandTotal = subtotal + extra - discount;
-  const tax = grandTotal * 0.05;
+  grandTotalEl.textContent = `AED ${formatNumberWithCommas(grandTotal)}`;
 
-  taxEl.textContent = `AED ${tax.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
-  grandTotalEl.textContent = `AED ${grandTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
-  amountDueTodayEl.textContent = `AED ${(grandTotal + tax).toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+  // --- NEW LOGIC: If there are additional items, VAT & Amount Due Today are calculated from them only ---
+  let vatBase = extra > 0 ? extra : grandTotal;
+  let tax = vatBase * 0.05;
+  let amountDueToday = vatBase + tax;
+
+  taxEl.textContent = `AED ${formatNumberWithCommas(tax)}`;
+  amountDueTodayEl.textContent = `AED ${formatNumberWithCommas(amountDueToday)}`;
 }
 
 function getInvoiceData() {
@@ -607,12 +653,6 @@ function getInvoiceData() {
     projectName2: document.getElementById('projectName2').value,
     location: document.getElementById('location').value,
     location1: document.getElementById('location1').value,
-    items: Array.from(itemsBody.querySelectorAll('tr')).map(row => ({
-      description: row.querySelector('.desc').value,
-      unit: row.querySelector('.unit').value,
-      quantity: row.querySelector('.qty').value,
-      price: row.querySelector('.price').value
-    })),
     extraItems: Array.from(extraItemsBody.querySelectorAll('tr')).map(row => ({
       name: row.querySelector('td').textContent,
       value: parseFloat(row.getAttribute('data-value'))
@@ -660,7 +700,7 @@ function loadInvoiceData(data) {
       row.innerHTML = `
         <td>${item.name}</td>
         <td>
-          AED ${item.value.toFixed(2)}
+          AED ${formatNumberWithCommas(item.value)}
           <button class="delete-btn no-export">❌</button>
         </td>
       `;
@@ -679,7 +719,7 @@ function loadInvoiceData(data) {
       row.innerHTML = `
         <td>${item.name}</td>
         <td style="color: #ff0000">
-          - AED ${item.value.toFixed(2)}
+          - AED ${formatNumberWithCommas(item.value)}
           <button class="delete-btn no-export">❌</button>
         </td>
       `;
@@ -769,16 +809,21 @@ function clearInvoice() {
 // Event listeners
 document.getElementById("addItemBtn").addEventListener("click", () => createItemRow());
 
+document.getElementById("extraValue").addEventListener("input", parseAndFormatInput);
+document.getElementById("discountValue").addEventListener("input", parseAndFormatInput);
+
 document.getElementById("addExtraBtn").addEventListener("click", () => {
   const name = document.getElementById("extraDescription").value;
-  const val = parseFloat(document.getElementById("extraValue").value);
+  const valInput = document.getElementById("extraValue");
+  const valRaw = valInput.value.replace(/,/g, "");
+  const val = parseFloat(valRaw);
   if (name && val > 0) {
     const row = document.createElement("tr");
     row.setAttribute("data-value", val);
     row.innerHTML = `
       <td>${name}</td>
       <td>
-        AED ${val.toFixed(2)}
+        AED ${formatNumberWithCommas(val)}
         <button class="delete-btn no-export">❌</button>
       </td>
     `;
@@ -788,19 +833,22 @@ document.getElementById("addExtraBtn").addEventListener("click", () => {
     });
     extraItemsBody.appendChild(row);
     calculateTotals();
+    valInput.value = "";
   }
 });
 
 document.getElementById("addDiscountBtn").addEventListener("click", () => {
   const name = document.getElementById("discountDescription").value;
-  const val = parseFloat(document.getElementById("discountValue").value);
+  const valInput = document.getElementById("discountValue");
+  const valRaw = valInput.value.replace(/,/g, "");
+  const val = parseFloat(valRaw);
   if (name && val > 0) {
     const row = document.createElement("tr");
     row.setAttribute("data-value", val);
     row.innerHTML = `
       <td>${name}</td>
-      <td>
-        - AED ${val.toFixed(2)}
+      <td style="color: #ff0000">
+        - AED ${formatNumberWithCommas(val)}
         <button class="delete-btn no-export">❌</button>
       </td>
     `;
@@ -810,6 +858,7 @@ document.getElementById("addDiscountBtn").addEventListener("click", () => {
     });
     discountItemsBody.appendChild(row);
     calculateTotals();
+    valInput.value = "";
   }
 });
 
