@@ -84,18 +84,19 @@
     .header-info {
       position: absolute;
       font-weight: bold;
-      top: 100px;
+      top: 115px;
+      margin-top: -9px;
       bottom: 10px;
-      left: 40px;
+      left: 20px;
       color: #000;
       font-size: 12px;
     }
 
     .date-info {
       position: absolute;
-      top: 72px;
+      top: 79px;
       bottom: 10px;
-      left: 40px;
+      left: 20px;
       color: #fff;
       font-size: 12px;
     }
@@ -140,12 +141,44 @@
 
     .footer {
       background: url('') no-repeat center bottom;
-      background-size: cover;
+      background-size: contain;
       height: 120px;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+
     }
 
     .section {
       margin: 0px 0;
+    }
+    .trapezoid {
+      position: absolute;
+      width: 370px;
+      height: 60px;
+      top: 98px;
+      bottom: 10px;
+      left: 530px;
+      background-color: #1d3e78; /* Main blue */
+      clip-path: polygon(10% 0, 100% 0, 100% 100%, 0% 100%); /* Cut left slant */
+    }
+    .contact-info {
+      padding: 3px 0px 0px 50px;
+      display: flex;
+      align-items: center;
+      gap: 30px; /* Space between WhatsApp and Email */
+      font-size: 14px;
+    }
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: #fff;
+    }
+    .contact-item i {
+      
+      font-size: 22px;
     }
     
     .se {
@@ -210,6 +243,13 @@
       color: #fffff;
       width: 260px;
      font-size:24px;
+    }
+ .tabledin {
+      padding: 15px;
+      text-align: left;
+      color: #fffff;
+      width: 260px;
+     font-size:14px;
     }
 
     table {
@@ -337,6 +377,7 @@
   line-height: 1.4 !important;
 }
   </style>
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 <div class="page-container">
@@ -351,15 +392,36 @@
          <div class="se">
             <h3 class="tabled">TRN: 100511224600003</h3>
         </div>
+          <div class="trapezoid">
+             <div class="contact-info">
+  <a href="https://wa.me/97126416009" class="contact-item" target="_blank">
+    <i class="fab fa-whatsapp"></i>
+    +971 2 641 6009
+  </a>
+
+  <a href="mailto:info@kon-uae.com" class="contact-item">
+    <i class="fas fa-envelope"></i>
+    info@kon-uae.com
+  </a>
+</div>
+            <div class="contact-info">
+  <a href="https://maps.google.com/?q=24.440023,54.412598" class="contact-item" target="_blank">
+    <i class="fas fa-map-marker-alt"></i>
+    6, Al Milaysa St
+Hadbat Al Za'faranah, AD
+  </a>
+</div>
+            
+          </div>
          <div class="sec">
             <h3 class="tabledx">TAX INVOICE</h3>
         </div>
           
           <div class="date-info">
-            <label style="color:white; width:200px; font-size:12px;font-weight: bold;">Date: <input style="color:white; width:200px; font-size:12px;font-weight: bold; background:transparent; padding:12px; border-color:transparent;" type="txt" id="invoiceDate"></label>
+            <label style="color:white; width:200px; font-size:12px;font-weight: bold;">Date: <input style="color:white; width:200px; font-size:12px;font-weight: bold; background:transparent; border-color:transparent;" type="txt" id="invoiceDate"></label>
           </div>
           <div class="header-info">
-            <label>Reference: <input style="width:400px; font-size:12px; font-weight: bold; background:transparent; padding-top:12px; border-color:transparent;" type="text" id="reference"></label>
+            <label>Reference: <input style="width:400px; font-size:12px; font-weight: bold; background:transparent; border-color:transparent;" type="text" id="reference"></label>
             <p>Invoice Number: <input style="width:300px; font-size:12px; font-weight: bold; background:transparent; border-color:transparent;" type="text" id="invoiceNumber"></p>
           </div>
         </div>
@@ -371,35 +433,33 @@
           <div class="client-details">
             <h3 class="tableb">Client Details</h3>
             <p style="margin-bottom: 0px;">
-              <strong style="font-size:14px;">Name/Reference:</strong>
-              <input style="width:300px; font-size:14px; font-weight: bold; background:transparent; border-color:transparent;" type="text" id="clientName">
+             <input style="width:400px; font-size:14px; font-weight: bold; background:transparent; border-color:transparent;" value="Name/Reference:" id="clientName">
                <input style="width:400px; margin-left: 5px; font-size:14px; font-weight: bold; background:transparent; border-color:transparent;" type="text" id="clientName1">
             </p>
             <p style="margin-top: 0px; margin-bottom: 0px;">
-              <strong style="font-size:14px;">Att./Email:</strong>
-              <input style="width:350px; font-size:14px; font-weight: bold; background:transparent; border-color:transparent;" type="text" id="attEmail">
+               <input style="width:400px; font-size:14px; font-weight: bold; background:transparent; border-color:transparent;" value="Att./Email:" id="attEmail">
 <input style="width:430px; font-size:14px; font-weight: bold; background:transparent; border-color:transparent;" type="text" id="attEmail1">
 <input style="width:430px; font-size:14px; font-weight: bold; background:transparent; border-color:transparent;" type="text" id="attEmail2">
 <input style="width:430px; font-size:14px; font-weight: bold; background:transparent; border-color:transparent;" type="text" id="attEmail3">
             </p>
             <p style="margin-top: 15px;">
-              <strong style="font-size:14px;">LPO Number:</strong>
-              <input style="width:330px; font-size:14px; font-weight: bold; background:transparent; border-color:transparent;" type="text" id="lpoNumber">
+              <input style="width:400px; font-size:14px; font-weight: bold; background:transparent; border-color:transparent;" value="LPO Number:" id="lpoNumber">
+              
+              
             </p>
           </div>
 
           <div class="project-details">
             <h3 class="tableb">Project Details</h3>
             <p style="margin-bottom: 0px;">
-              <strong style="font-size:14px;">Project Name/Ref:</strong>
-              
-<input style="width:290px; font-size:14px; font-weight: bold; background:transparent; border-color:transparent;" type="text" id="projectName">
+            
+<input style="width:400px; font-size:14px; font-weight: bold; background:transparent; border-color:transparent;" type="text" value="Project Name/Ref:" id="projectName">
 <input style="width:420px; font-size:14px; font-weight: bold; background:transparent; border-color:transparent;" type="text" id="projectName1">
 <input style="width:420px; font-size:14px; font-weight: bold; background:transparent; border-color:transparent;" type="text" id="projectName2">
             </p>
             <p style="margin-top: 25px;">
-              <strong style="font-size:14px;">Location:</strong>
-              <input style="width:350px; font-size:14px; font-weight: bold; background:transparent; border-color:transparent;" type="text" id="location">
+              
+              <input style="width:400px; font-size:14px; font-weight: bold; background:transparent; border-color:transparent;" value="Location:" type="text" id="location">
 <input style="width:400px; font-size:14px; font-weight: bold; background:transparent; border-color:transparent;" type="text" id="location1">
             </p>
           </div>
@@ -450,7 +510,7 @@
                 </tbody><tbody id="extraItemsBody"></tbody>
                 <tbody><tr><td>VAT (5%)</td><td id="tax">AED 0.00</td></tr>
                 </tbody><tbody id="extraFields"></tbody>
-                <tbody><tr class="tablec"><td>Amount Due Today</td><td id="amountDueToday">AED 0.00</td></tr>
+                <tbody><tr class="tablec"><td> <input style="font-weight: bold; background:transparent; text-align: center; color:#fff; border-color:transparent;" value="Amount Due Today"></td><td id="amountDueToday">AED 0.00</td></tr>
               </tbody></table>
             </div>
           </div>
@@ -623,7 +683,7 @@ function calculateTotals() {
     discount += val;
   });
 
-  const grandTotal = subtotal + extra - discount;
+  const grandTotal = subtotal - discount;
   grandTotalEl.textContent = `AED ${formatNumberWithCommas(grandTotal)}`;
 
   // --- NEW LOGIC: If there are additional items, VAT & Amount Due Today are calculated from them only ---
@@ -642,7 +702,7 @@ function getInvoiceData() {
     reference: document.getElementById('reference').value,
     invoiceNumber: document.getElementById('invoiceNumber').value,
     clientName: document.getElementById('clientName').value,
-    clientName1: document.getElementById('clientName1').value, 
+    clientName1: document.getElementById('clientName1').value,
     attEmail: document.getElementById('attEmail').value,
     attEmail1: document.getElementById('attEmail1').value,
     attEmail2: document.getElementById('attEmail2').value,
@@ -653,6 +713,14 @@ function getInvoiceData() {
     projectName2: document.getElementById('projectName2').value,
     location: document.getElementById('location').value,
     location1: document.getElementById('location1').value,
+
+    items: Array.from(document.querySelectorAll("#itemsTableBody tr")).map(row => ({
+      description: row.querySelector(".desc").value,
+      unit: row.querySelector(".unit").value,
+      quantity: parseFloat(row.querySelector(".qty").value.replace(/,/g, "")) || 0,
+      price: parseFloat(row.querySelector(".price").value.replace(/,/g, "")) || 0,
+    })),
+
     extraItems: Array.from(extraItemsBody.querySelectorAll('tr')).map(row => ({
       name: row.querySelector('td').textContent,
       value: parseFloat(row.getAttribute('data-value'))
@@ -665,6 +733,7 @@ function getInvoiceData() {
     createdAt: document.getElementById('currentDateTime').textContent
   };
 }
+
 
 function loadInvoiceData(data) {
   // Clear the form but do NOT add a new item row automatically
@@ -692,8 +761,10 @@ function loadInvoiceData(data) {
   document.getElementById('invoiceNumber').value = data.invoiceNumber || '';
   document.getElementById('clientName').value = data.clientName || '';
  document.getElementById('clientName1').value = data.clientName1 || '';
- document.getElementById('attEmail').value = data.attEmail || '';  document.getElementById('attEmail1').value = data.attEmail1 || '';
- document.getElementById('attEmail2').value = data.attEmail2 || '';  document.getElementById('attEmail3').value = data.attEmail3 || '';
+ document.getElementById('attEmail').value = data.attEmail || '';  
+ document.getElementById('attEmail1').value = data.attEmail1 || '';
+ document.getElementById('attEmail2').value = data.attEmail2 || '';  
+ document.getElementById('attEmail3').value = data.attEmail3 || '';
  document.getElementById('lpoNumber').value = data.lpoNumber || '';
   document.getElementById('projectName').value = data.projectName || '';
   document.getElementById('projectName1').value = data.projectName1 || '';
@@ -773,7 +844,7 @@ function loadSavedInvoices() {
     const item = document.createElement("li");
     item.innerHTML = `
       <span class="invoice-meta">
-        ${inv.clientName || 'Unnamed'} - ${inv.invoiceNumber || inv.id}
+        ${inv.clientName || 'Unnamed'} - ${inv.reference || inv.id}
       </span>
       <button class="delete-invoice-btn">❌</button>
     `;
@@ -885,6 +956,20 @@ exportBtn.addEventListener("click", async () => {
 
   const invoice = document.querySelector('.invoice');
   const clone = invoice.cloneNode(true);
+  
+  clone.querySelectorAll('textarea').forEach(textarea => {
+  const div = document.createElement('div');
+  
+  div.style.whiteSpace = 'pre-line'; // Preserve line breaks
+  div.style.fontSize = textarea.style.fontSize || '14px'; // Preserve font size
+  div.style.textAlign = 'left'; // Align text to the left
+  div.style.direction = 'ltr'; // Set direction to Left-To-Right
+  
+  div.textContent = textarea.value; // Copy text
+  textarea.parentNode.replaceChild(div, textarea); // Replace textarea
+  });
+
+
   const tempContainer = document.createElement('div');
   tempContainer.style.position = 'absolute';
   tempContainer.style.left = '-9999px';
