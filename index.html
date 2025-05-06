@@ -75,8 +75,8 @@
     }
 
     .header {
-      background: url('https://cdn.shopify.com/s/files/1/0636/1035/5827/files/1.jpg') no-repeat center top;
-      background-size: cover;
+      background: url('https://cdn.shopify.com/s/files/1/0636/1035/5827/files/1.png') no-repeat center top;
+      background-size: contain;
       height: 150px;
       position: relative;
     }
@@ -189,7 +189,15 @@
       color: #fff;
       font-size: 12px;
     }
- .sec {
+    .secl {
+      position: absolute;
+      top: 0px;
+      bottom: 10px;
+      left: 717px;
+      color: #fff;
+      font-size: 12px;
+    }
+    .sec {
       position: absolute;
       top: 0px;
       bottom: 10px;
@@ -237,6 +245,13 @@
       color: #234082;
       width: 260px;
     }
+    .tabledl {
+      
+      text-align: left;
+      color: #234082;
+      background-color: #fff;
+      width: 200px;
+    }
 .tabledx {
       margin-top: 15px;
       text-align: left;
@@ -244,6 +259,7 @@
       width: 260px;
      font-size:24px;
     }
+    
  .tabledin {
       padding: 15px;
       text-align: left;
@@ -389,9 +405,7 @@
 <span id="currentDateTime" style="display:none;">N/A</span>
 
         <div class="header">
-         <div class="se">
-            <h3 class="tabled">TRN: 100511224600003</h3>
-        </div>
+       
           <div class="trapezoid">
              <div class="contact-info">
   <a href="https://wa.me/97126416009" class="contact-item" target="_blank">
@@ -416,7 +430,7 @@ Hadbat Al Za'faranah, AD
          <div class="sec">
             <h3 class="tabledx">TAX INVOICE</h3>
         </div>
-          
+         
           <div class="date-info">
             <label style="color:white; width:200px; font-size:12px;font-weight: bold;">Date: <input style="color:white; width:200px; font-size:12px;font-weight: bold; background:transparent; border-color:transparent;" type="txt" id="invoiceDate"></label>
           </div>
@@ -480,17 +494,14 @@ Hadbat Al Za'faranah, AD
                 </tr>
               </thead>
               <tbody id="itemsTableBody"></tbody>
+              <tr id="itemsTableTotalRow">
+    <td colspan="4" style="text-align:center; font-weight:bold;">TOTAL</td>
+    <td id="subtotal" style="font-weight:bold;">AED 0.00</td>
+    <td class="no-export"></td>
+  </tr>
             </table>
             <button id="addItemBtn" class="no-export">➕ Add Item</button>
-            <table>
-                <tbody style=""><tr><td>TOTAL</td><td id="subtotal">AED 0.00</td></tr>
-               </tbody></table>
           </div>
-
-             
-              
-            
-            
             <div class="summary">
               <h3 style="font-size:14px;">Summary</h3>
               <table>
@@ -516,7 +527,7 @@ Hadbat Al Za'faranah, AD
                 </tbody><tbody id="extraItemsBody"></tbody>
                 <tbody><tr><td>VAT (5%)</td><td id="tax">AED 0.00</td></tr>
                 </tbody><tbody id="extraFields"></tbody>
-                <tbody><tr class="tablec"><td> <input style="font-weight: bold; background:transparent; text-align: center; color:#fff; border-color:transparent;" value="Amount Due Today"></td><td id="amountDueToday">AED 0.00</td></tr>
+                <tbody><tr class="tablec"><td> <input style="font-weight: bold; background:transparent; text-align: center; color:#fff; border-color:transparent;" value="TOTAL WITH VAT"></td><td id="amountDueToday">AED 0.00</td></tr>
               </tbody></table>
             </div>
         
@@ -529,8 +540,8 @@ Hadbat Al Za'faranah, AD
             </div>
           
           <div class="signature">
-            <p>Presented By:</p>
-            <strong style="font-size:14px;">KON General Contracting</strong>
+            <h3>Submited By:</h3>
+            <strong style="font-size:14px;">KON General Contracting L.L.C</strong>
           </div>
 
           <div class="action-buttons no-export">
@@ -558,58 +569,42 @@ Hadbat Al Za'faranah, AD
 // Initialize jsPDF
 const { jsPDF } = window.jspdf;
 
-// Set current date and time
-const date = new Date();
+// ======= DateTime and User Info =======
+function updateDateTime() {
+  const now = new Date();
+  const formatted = now.toISOString().slice(0, 19).replace('T', ' ');
+  document.getElementById('currentDateTime').textContent = formatted;
+}
+setInterval(updateDateTime, 1000);
+updateDateTime(); // Initial call
 
-let day = date.getDate();
-let month = date.getMonth() + 1;
-let year = date.getFullYear();
+// Current user display
+document.getElementById('currentUser').textContent = 'AmrElsayed-1994';
 
-let currentDate = `${day}/${month}/${year}`;
-console.log(currentDate);
-
-// Helper function for formatting numbers with commas, no .00 unless user adds decimals
+// ======= Number Formatting =======
 function formatNumberWithCommas(val) {
-  if (val === "" || val === null || isNaN(val)) return "";
-  const valStr = String(val);
-  if (valStr.includes(".")) {
-    let [intPart, decPart] = valStr.split(".");
-    intPart = Number(intPart).toLocaleString();
-    // Keep only up to first two decimal digits entered by user
-    decPart = decPart ? decPart.substring(0, 2) : "";
-    // Remove trailing zero if user types e.g. .00 or .10 etc -- but keep user-typed formatting
-    return decPart.length > 0 ? `${intPart}.${decPart}` : intPart;
-  }
-  return Number(val).toLocaleString();
+  let num = parseFloat(String(val).replace(/,/g, ""));
+  if (isNaN(num)) return "0.00";
+  return num.toLocaleString('en-US', { 
+    minimumFractionDigits: 2, 
+    maximumFractionDigits: 2 
+  });
 }
 
-// Format input as user types (no .00 unless user adds it)
-function parseAndFormatInput(e) {
+function handleNumberInput(e) {
+  e.target.value = e.target.value.replace(/[^0-9.,]/g, '');
+}
+
+function handleNumberBlur(e) {
   let val = e.target.value.replace(/,/g, "");
-  if (val === "") {
-    e.target.value = "";
+  if (val === "" || isNaN(val)) {
+    e.target.value = "0.00";
     return;
   }
-  if (val.includes(".")) {
-    let [intPart, decPart] = val.split(".");
-    intPart = intPart === "" ? "0" : intPart;
-    let formatted = Number(intPart).toLocaleString();
-    if (typeof decPart !== "undefined") {
-      decPart = decPart.substring(0, 2); // max 2 decimals
-      e.target.value = decPart.length > 0 ? `${formatted}.${decPart}` : formatted;
-    } else {
-      e.target.value = formatted;
-    }
-  } else {
-    let num = parseFloat(val);
-    if (!isNaN(num)) {
-      e.target.value = formatNumberWithCommas(num);
-    }
-  }
+  e.target.value = formatNumberWithCommas(val);
 }
 
-// Initialize variables
-let itemId = 0;
+// ======= DOM Elements =======
 const itemsBody = document.getElementById("itemsTableBody");
 const extraItemsBody = document.getElementById("extraItemsBody");
 const discountItemsBody = document.getElementById("discountItemsBody");
@@ -622,25 +617,16 @@ const exportBtn = document.getElementById("exportBtn");
 const printBtn = document.getElementById("printBtn");
 const clearBtn = document.getElementById("clearBtn");
 
-let extraFields = [];
-
-// Update timestamp every second
-function updateDateTime() {
-  const now = new Date();
-  const formatted = now.toISOString().replace('T', ' ').substring(0, 19) + ' UTC';
-  document.getElementById('currentDateTime').textContent = formatted;
-}
-setInterval(updateDateTime, 1000);
-
-function createItemRow(description = "", unit = "", quantity = 1, price = 0, total = 0) {
+// ======= Item Row Creation =======
+function createItemRow(description = "", unit = "", quantity = 1, price = 0) {
   const row = document.createElement("tr");
   row.classList.add("invoice-item");
   row.innerHTML = `
-    <td><textarea class="desc" style="font-size: 14px;width: 100%; background:transparent; border-color:transparent; resize: both;">${description}</textarea></td>
-    <td><input style="text-align: center; width: 60px;" value="${unit}" class="unit"></td>
-    <td><input style="text-align: center; width: 60px;" type="text" value="${formatNumberWithCommas(quantity)}" class="qty"></td>
-    <td><input style="text-align: center; width: 60px;" type="text" value="${formatNumberWithCommas(price)}" class="price"></td>
-    <td class="total">${formatNumberWithCommas(total)}</td>
+    <td><textarea class="desc" style="font-size:14px;width:100%;background:transparent;border-color:transparent;resize:both;">${description}</textarea></td>
+    <td><input class="unit" value="${unit}" style="text-align:center; width: 75px;"></td>
+    <td><input class="qty" type="text" value="${formatNumberWithCommas(quantity)}" style="text-align:center;width:75px;"></td>
+    <td><input class="price" type="text" value="${formatNumberWithCommas(price)}" style="text-align:center; width:75px;"></td>
+    <td class="total">${formatNumberWithCommas(quantity * price)}</td>
     <td class="no-export"><button class="delete-btn">❌</button></td>
   `;
 
@@ -649,13 +635,11 @@ function createItemRow(description = "", unit = "", quantity = 1, price = 0, tot
     calculateTotals();
   });
 
-  // Format quantity and price on input, and recalculate
   [".qty", ".price"].forEach(cls => {
     let input = row.querySelector(cls);
-    input.addEventListener("input", (e) => {
-      parseAndFormatInput(e);
-      calculateTotals();
-    });
+    input.addEventListener("input", handleNumberInput);
+    input.addEventListener("blur", handleNumberBlur);
+    input.addEventListener("blur", calculateTotals);
   });
 
   row.querySelector(".desc").addEventListener("input", calculateTotals);
@@ -665,17 +649,55 @@ function createItemRow(description = "", unit = "", quantity = 1, price = 0, tot
   calculateTotals();
 }
 
+// ======= Extra/Discount Rows =======
+function createExtraRow(name, value) {
+  const row = document.createElement("tr");
+  row.setAttribute("data-value", value);
+  row.innerHTML = `
+    <td>${name}</td>
+    <td>
+      AED ${formatNumberWithCommas(value)}
+      <button class="delete-btn no-export">❌</button>
+    </td>
+  `;
+  row.querySelector(".delete-btn").addEventListener("click", () => {
+    row.remove();
+    calculateTotals();
+  });
+  extraItemsBody.appendChild(row);
+  calculateTotals();
+}
+
+function createDiscountRow(name, value) {
+  const row = document.createElement("tr");
+  row.setAttribute("data-value", value);
+  row.innerHTML = `
+    <td>${name}</td>
+    <td style="color:#ff0000">
+      - AED ${formatNumberWithCommas(value)}
+      <button class="delete-btn no-export">❌</button>
+    </td>
+  `;
+  row.querySelector(".delete-btn").addEventListener("click", () => {
+    row.remove();
+    calculateTotals();
+  });
+  discountItemsBody.appendChild(row);
+  calculateTotals();
+}
+
+// ======= Calculations =======
 function calculateTotals() {
   let subtotal = 0;
   itemsBody.querySelectorAll("tr").forEach(row => {
-    const qty = parseFloat(row.querySelector(".qty").value.replace(/,/g, "")) || 0;
-    const price = parseFloat(row.querySelector(".price").value.replace(/,/g, "")) || 0;
+    const qty = parseFloat((row.querySelector(".qty").value || "0").replace(/,/g, "")) || 0;
+    const price = parseFloat((row.querySelector(".price").value || "0").replace(/,/g, "")) || 0;
     const total = qty * price;
-    row.querySelector(".total").textContent = ` ${formatNumberWithCommas(total)}`;
+    row.querySelector(".total").textContent = formatNumberWithCommas(total);
     subtotal += total;
   });
 
-  subtotalEl.textContent = `AED ${formatNumberWithCommas(subtotal)}`;
+  subtotalEl.textContent = `${formatNumberWithCommas(subtotal)}`;
 
   let extra = 0;
   extraItemsBody.querySelectorAll("tr").forEach(row => {
@@ -692,7 +714,7 @@ function calculateTotals() {
   const grandTotal = subtotal - discount;
   grandTotalEl.textContent = `AED ${formatNumberWithCommas(grandTotal)}`;
 
-  // --- NEW LOGIC: If there are additional items, VAT & Amount Due Today are calculated from them only ---
+ // --- NEW LOGIC: If there are additional items, VAT & Amount Due Today are calculated from them only ---
   let vatBase = extra > 0 ? extra : grandTotal;
   let tax = vatBase * 0.05;
   let amountDueToday = vatBase + tax;
@@ -701,6 +723,7 @@ function calculateTotals() {
   amountDueTodayEl.textContent = `AED ${formatNumberWithCommas(amountDueToday)}`;
 }
 
+// ======= Save/Load Functions =======
 function getInvoiceData() {
   return {
     id: `INV-${Date.now()}`,
@@ -719,110 +742,62 @@ function getInvoiceData() {
     projectName2: document.getElementById('projectName2').value,
     location: document.getElementById('location').value,
     location1: document.getElementById('location1').value,
-
-    items: Array.from(document.querySelectorAll("#itemsTableBody tr")).map(row => ({
+    items: Array.from(itemsBody.querySelectorAll("tr")).map(row => ({
       description: row.querySelector(".desc").value,
       unit: row.querySelector(".unit").value,
       quantity: parseFloat(row.querySelector(".qty").value.replace(/,/g, "")) || 0,
       price: parseFloat(row.querySelector(".price").value.replace(/,/g, "")) || 0,
     })),
-
-    extraItems: Array.from(extraItemsBody.querySelectorAll('tr')).map(row => ({
-      name: row.querySelector('td').textContent,
-      value: parseFloat(row.getAttribute('data-value'))
+    extraItems: Array.from(extraItemsBody.querySelectorAll("tr")).map(row => ({
+      name: row.querySelector("td").textContent,
+      value: parseFloat(row.getAttribute("data-value"))
     })),
-    discountItems: Array.from(discountItemsBody.querySelectorAll('tr')).map(row => ({
-      name: row.querySelector('td').textContent,
-      value: parseFloat(row.getAttribute('data-value'))
+    discountItems: Array.from(discountItemsBody.querySelectorAll("tr")).map(row => ({
+      name: row.querySelector("td").textContent,
+      value: parseFloat(row.getAttribute("data-value"))
     })),
     createdBy: document.getElementById('currentUser').textContent,
     createdAt: document.getElementById('currentDateTime').textContent
   };
 }
 
-
 function loadInvoiceData(data) {
-  // Clear the form but do NOT add a new item row automatically
-  document.getElementById('invoiceDate').value = '';
-  document.getElementById('reference').value = '';
-  document.getElementById('invoiceNumber').value = '';
-  document.getElementById('clientName').value = '';
-  document.getElementById('clientName1').value = '';
-  document.getElementById('attEmail').value = '';
-  document.getElementById('attEmail1').value = '';
-  document.getElementById('attEmail2').value = '';
-  document.getElementById('attEmail3').value = '';
-  document.getElementById('lpoNumber').value = '';
-  document.getElementById('projectName').value = '';
-  document.getElementById('projectName1').value = '';
-  document.getElementById('projectName2').value = '';
-  document.getElementById('location').value = '';
-  document.getElementById('location1').value = '';
-  itemsBody.innerHTML = '';
-  extraItemsBody.innerHTML = '';
- discountItemsBody.innerHTML = '';
-
+  // Clear existing data
   document.getElementById('invoiceDate').value = data.date || '';
   document.getElementById('reference').value = data.reference || '';
   document.getElementById('invoiceNumber').value = data.invoiceNumber || '';
   document.getElementById('clientName').value = data.clientName || '';
- document.getElementById('clientName1').value = data.clientName1 || '';
- document.getElementById('attEmail').value = data.attEmail || '';  
- document.getElementById('attEmail1').value = data.attEmail1 || '';
- document.getElementById('attEmail2').value = data.attEmail2 || '';  
- document.getElementById('attEmail3').value = data.attEmail3 || '';
- document.getElementById('lpoNumber').value = data.lpoNumber || '';
+  document.getElementById('clientName1').value = data.clientName1 || '';
+  document.getElementById('attEmail').value = data.attEmail || '';
+  document.getElementById('attEmail1').value = data.attEmail1 || '';
+  document.getElementById('attEmail2').value = data.attEmail2 || '';
+  document.getElementById('attEmail3').value = data.attEmail3 || '';
+  document.getElementById('lpoNumber').value = data.lpoNumber || '';
   document.getElementById('projectName').value = data.projectName || '';
   document.getElementById('projectName1').value = data.projectName1 || '';
   document.getElementById('projectName2').value = data.projectName2 || '';
- document.getElementById('location').value = data.location || '';
- document.getElementById('location1').value = data.location1 || '';
+  document.getElementById('location').value = data.location || '';
+  document.getElementById('location1').value = data.location1 || '';
+  
+  itemsBody.innerHTML = '';
+  extraItemsBody.innerHTML = '';
+  discountItemsBody.innerHTML = '';
 
-  if (data.items && data.items.length > 0) {
+  if (data.items?.length > 0) {
     data.items.forEach(item => {
-     createItemRow(item.description, item.unit, item.quantity, item.price);
-   });
- }
-  // Do NOT create a new empty row if there are no items
-
- if (data.extraItems) {
-    data.extraItems.forEach(item => {
-      const row = document.createElement("tr");
-     row.setAttribute("data-value", item.value);
-      row.innerHTML = `
-        <td>${item.name}</td>       <td>
-         AED ${item.value.toFixed(2)}
-          <button class="delete-btn no-export">❌</button>
-       </td>
-     `;
-     row.querySelector(".delete-btn").addEventListener("click", () => {
-        row.remove();
-        calculateTotals();
-     });
-     extraItemsBody.appendChild(row);
+      createItemRow(item.description, item.unit, item.quantity, item.price);
     });
   }
 
- if (data.discountItems) {
-   data.discountItems.forEach(item => {
-     const row = document.createElement("tr");
-     row.setAttribute("data-value", item.value);
-     row.innerHTML = `
-       <td>${item.name}</td>
-       <td style="color: #ff0000">
-         - AED ${item.value.toFixed(2)}
-         <button class="delete-btn no-export">❌</button>
-      </td>
-     `;
-    row.querySelector(".delete-btn").addEventListener("click", () => {
-      row.remove();
-     calculateTotals();
+  data.extraItems?.forEach(item => {
+    createExtraRow(item.name, item.value);
   });
-    discountItemsBody.appendChild(row);
- });
- }
 
- calculateTotals();
+  data.discountItems?.forEach(item => {
+    createDiscountRow(item.name, item.value);
+  });
+
+  calculateTotals();
 }
 
 function saveInvoice() {
@@ -832,13 +807,6 @@ function saveInvoice() {
   localStorage.setItem('invoices', JSON.stringify(saved));
   loadSavedInvoices();
   alert('Invoice saved successfully ✅');
-}
-
-function createInvoiceList() {
-  const list = document.createElement("ul");
-  list.id = "invoiceList";
-  document.querySelector(".action-buttons").after(list);
-  return list;
 }
 
 function loadSavedInvoices() {
@@ -868,28 +836,17 @@ function loadSavedInvoices() {
 function deleteInvoice(id) {
   if (confirm('Are you sure you want to delete this invoice?')) {
     const saved = JSON.parse(localStorage.getItem('invoices') || '[]');
-    const filtered = saved.filter(inv => inv.id !== id);
-    localStorage.setItem('invoices', JSON.stringify(filtered));
+    localStorage.setItem('invoices', JSON.stringify(saved.filter(inv => inv.id !== id)));
     loadSavedInvoices();
   }
 }
 
 function clearInvoice() {
-  document.getElementById('invoiceDate').value = '';
-  document.getElementById('reference').value = '';
-  document.getElementById('invoiceNumber').value = '';
-  document.getElementById('clientName').value = '';
-  document.getElementById('clientName1').value = '';
-  document.getElementById('attEmail').value = '';
-  document.getElementById('attEmail1').value = '';
-  document.getElementById('attEmail2').value = '';
-  document.getElementById('attEmail3').value = '';
-  document.getElementById('lpoNumber').value = '';
-  document.getElementById('projectName').value = '';
-  document.getElementById('projectName1').value = '';
-  document.getElementById('projectName2').value = '';
-  document.getElementById('location').value = '';
-  document.getElementById('location1').value = '';
+  ['invoiceDate', 'reference', 'invoiceNumber', 'clientName', 'clientName1', 
+   'attEmail', 'attEmail1', 'attEmail2', 'attEmail3', 'lpoNumber', 
+   'projectName', 'projectName1', 'projectName2', 'location', 'location1'
+  ].forEach(id => document.getElementById(id).value = '');
+  
   itemsBody.innerHTML = '';
   extraItemsBody.innerHTML = '';
   discountItemsBody.innerHTML = '';
@@ -897,84 +854,55 @@ function clearInvoice() {
   calculateTotals();
 }
 
-// Event listeners
+// ======= Event Listeners =======
 document.getElementById("addItemBtn").addEventListener("click", () => createItemRow());
 
-document.getElementById("extraValue").addEventListener("input", parseAndFormatInput);
-document.getElementById("discountValue").addEventListener("input", parseAndFormatInput);
-
+// Extra Items
+document.getElementById("extraValue").addEventListener("input", handleNumberInput);
+document.getElementById("extraValue").addEventListener("blur", handleNumberBlur);
 document.getElementById("addExtraBtn").addEventListener("click", () => {
   const name = document.getElementById("extraDescription").value;
   const valInput = document.getElementById("extraValue");
-  const valRaw = valInput.value.replace(/,/g, "");
-  const val = parseFloat(valRaw);
+  const val = parseFloat(valInput.value.replace(/,/g, "")) || 0;
   if (name && val > 0) {
-    const row = document.createElement("tr");
-    row.setAttribute("data-value", val);
-    row.innerHTML = `
-      <td>${name}</td>
-      <td>
-        AED ${formatNumberWithCommas(val)}
-        <button class="delete-btn no-export">❌</button>
-      </td>
-    `;
-    row.querySelector(".delete-btn").addEventListener("click", () => {
-      row.remove();
-      calculateTotals();
-    });
-    extraItemsBody.appendChild(row);
-    calculateTotals();
+    createExtraRow(name, val);
     valInput.value = "";
   }
 });
 
+// Discount Items
+document.getElementById("discountValue").addEventListener("input", handleNumberInput);
+document.getElementById("discountValue").addEventListener("blur", handleNumberBlur);
 document.getElementById("addDiscountBtn").addEventListener("click", () => {
   const name = document.getElementById("discountDescription").value;
   const valInput = document.getElementById("discountValue");
-  const valRaw = valInput.value.replace(/,/g, "");
-  const val = parseFloat(valRaw);
+  const val = parseFloat(valInput.value.replace(/,/g, "")) || 0;
   if (name && val > 0) {
-    const row = document.createElement("tr");
-    row.setAttribute("data-value", val);
-    row.innerHTML = `
-      <td>${name}</td>
-      <td style="color: #ff0000">
-        - AED ${formatNumberWithCommas(val)}
-        <button class="delete-btn no-export">❌</button>
-      </td>
-    `;
-    row.querySelector(".delete-btn").addEventListener("click", () => {
-      row.remove();
-      calculateTotals();
-    });
-    discountItemsBody.appendChild(row);
-    calculateTotals();
+    createDiscountRow(name, val);
     valInput.value = "";
   }
 });
 
+// Main Buttons
 saveBtn.addEventListener("click", saveInvoice);
 printBtn.addEventListener("click", () => window.print());
 clearBtn.addEventListener("click", clearInvoice);
 
+// PDF Export
 exportBtn.addEventListener("click", async () => {
   document.body.classList.add("export-pdf");
-
   const invoice = document.querySelector('.invoice');
   const clone = invoice.cloneNode(true);
   
   clone.querySelectorAll('textarea').forEach(textarea => {
-  const div = document.createElement('div');
-  
-  div.style.whiteSpace = 'pre-line'; // Preserve line breaks
-  div.style.fontSize = textarea.style.fontSize || '14px'; // Preserve font size
-  div.style.textAlign = 'left'; // Align text to the left
-  div.style.direction = 'ltr'; // Set direction to Left-To-Right
-  
-  div.textContent = textarea.value; // Copy text
-  textarea.parentNode.replaceChild(div, textarea); // Replace textarea
+    const div = document.createElement('div');
+    div.style.whiteSpace = 'pre-line';
+    div.style.fontSize = textarea.style.fontSize || '14px';
+    div.style.textAlign = 'left';
+    div.style.direction = 'ltr';
+    div.textContent = textarea.value;
+    textarea.parentNode.replaceChild(div, textarea);
   });
-
 
   const tempContainer = document.createElement('div');
   tempContainer.style.position = 'absolute';
@@ -999,36 +927,23 @@ exportBtn.addEventListener("click", async () => {
     const imgHeight = canvas.height * imgWidth / canvas.width;
 
     pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-    const invoiceNumber = document.getElementById('invoiceNumber').value ||
+    const invoiceNumber = document.getElementById('invoiceNumber').value || 
                          'invoice';
-    const reference = document.getElementById('reference').value ||
-                         'invoice';                     
+                         
+    const reference = document.getElementById('reference').value || 
+                         'reference';                     
     pdf.save(`${reference}.pdf`);
   } catch (error) {
-    console.error('Error generating PDF:', error);
-    alert('Error generating PDF. Please try again.');
+    console.error('PDF generation failed:', error);
   } finally {
-    document.body.removeChild(tempContainer);
     document.body.classList.remove("export-pdf");
+    tempContainer.remove();
   }
 });
 
-function autoResizeTextarea(el) {
-  el.style.height = 'auto';
-  el.style.height = (el.scrollHeight) + 'px';
-}
-
-document.addEventListener("input", function(e) {
-  if (e.target.tagName.toLowerCase() === 'textarea') {
-    autoResizeTextarea(e.target);
-  }
-});
-
-// Initialize the form
-window.onload = () => {
-  createItemRow();
-  loadSavedInvoices();
-};
+// ======= Initialize =======
+createItemRow(); // Add initial empty row
+loadSavedInvoices(); // Load saved invoices
 </script>
 </body>
 </html>
